@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Tracker Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #e11d1d;
+    --dark-red: #9b0a0a;
+    --black: #070707;
+    --dark-gray: #1a1a1a;
+    --medium-gray: #2a2a2a;
+    --light-gray: #3a3a3a;
+    --white: #ffffff;
+    --muted: rgba(255, 255, 255, 0.85);
+    --card: rgba(30, 30, 30, 0.6);
+    --glass: rgba(255, 255, 255, 0.04);
+    --success: #28a745;
+    --warning: #ffc107;
+    --info: #17a2b8;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--white);
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 30%, rgba(225, 29, 29, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(41, 128, 185, 0.15) 0%, transparent 40%);
+    z-index: -1;
+  }
+  
+  .app {
+    width: 100%;
+    max-width: 1200px;
+    z-index: 1;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: rgba(15, 15, 30, 0.7);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+  }
+  
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--red), var(--dark-red));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 8px 30px rgba(225, 29, 29, 0.25);
+  }
+  
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .small {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  
+  /* Grid layout */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 20px;
+  }
+  
+  @media (max-width: 980px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Card styles */
+  .card {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 20px;
+  }
+  
+  /* Login view */
+  #loginView {
+    max-width: 700px;
+    margin: 40px auto;
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(20, 20, 30, 0.5);
+    color: var(--white);
+    min-width: 200px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(225, 29, 29, 0.2);
+  }
+  
+  .btn {
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(90deg, var(--red), var(--dark-red));
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 8px 24px rgba(166, 15, 15, 0.25);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(166, 15, 15, 0.35);
+  }
+  
+  .btn:active {
+    transform: translateY(1px);
+  }
+  
+  .btn.ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: none;
+    color: var(--muted);
+  }
+  
+  .btn.ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--white);
+  }
+  
+  /* Dashboard */
+  .welcome {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(225, 29, 29, 0.15), rgba(0, 0, 0, 0.2));
+    display: inline-block;
+    margin-bottom: 5px;
+  }
+  
+  .stats {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  
+  .stat {
+    background: var(--glass);
+    padding: 15px;
+    border-radius: 12px;
+    min-width: 130px;
+    text-align: center;
+    flex: 1;
+  }
+  
+  .stat .big {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 5px;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  /* Progress circle */
+  .circle-wrap {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+  }
+  
+  .progress-svg {
+    transform: rotate(-90deg);
+  }
+  
+  .progress-label {
+    position: relative;
+    top: -90px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Topics */
+  .topics {
+    margin-top: 15px;
+  }
+  
+  .topic {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    background: rgba(40, 40, 50, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  .topic:hover {
+    background: rgba(50, 50, 60, 0.5);
+    transform: translateX(5px);
+  }
+  
+  .topic input[type="checkbox"] {
+    transform: scale(1.3);
+    accent-color: var(--red);
+    cursor: pointer;
+  }
+  
+  .topic .title {
+    flex: 1;
+    font-size: 17px;
+  }
+  
+  .topic .title.completed {
+    text-decoration: line-through;
+    color: var(--success);
+    opacity: 0.7;
+  }
+  
+  .topic .actions {
+    display: flex;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .topic:hover .actions {
+    opacity: 1;
+  }
+  
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--dark-gray);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 500;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 4px solid var(--red);
+  }
+  
+  .toast.show {
+    opacity: 1;
+  }
+  
+  /* Modal */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(8px);
+  }
+  
+  .modal.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .modal-content {
+    background: var(--dark-gray);
+    width: 90%;
+    max-width: 600px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    transform: translateY(30px);
+    transition: transform 0.4s ease;
+  }
+  
+  .modal.active .modal-content {
+    transform: translateY(0);
+  }
+  
+  .modal-header {
+    padding: 20px;
+    background: linear-gradient(90deg, var(--red), var(--dark-red));
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal-header h3 {
+    font-weight: 600;
+    font-size: 22px;
+  }
+  
+  .modal-body {
+    padding: 30px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  
+  .modal-footer {
+    padding: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    background: rgba(30, 30, 40, 0.8);
+  }
+  
+  /* Bulk editor */
+  .bulk-editor {
+    width: 100%;
+  }
+  
+  .bulk-editor textarea {
+    width: 100%;
+    min-height: 300px;
+    padding: 20px;
+    background: rgba(20, 20, 30, 0.5);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: 'Roboto', monospace;
+    font-size: 16px;
+    line-height: 1.6;
+    resize: vertical;
+  }
+  
+  .instructions {
+    background: rgba(30, 30, 40, 0.5);
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  
+  .instructions ul {
+    padding-left: 20px;
+    margin-top: 10px;
+  }
+  
+  .instructions li {
+    margin-bottom: 8px;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(225, 29, 29, 0.6); }
+    50% { box-shadow: 0 0 20px rgba(225, 29, 29, 0.8); }
+    100% { box-shadow: 0 0 5px rgba(225, 29, 29, 0.6); }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+    }
+    
+    input, select {
+      width: 100%;
+    }
+    
+    .controls {
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="logo">ST</div>
+        <div>
+          <h1>Study Tracker Pro</h1>
+          <div class="small">Track your study progress with advanced tools</div>
+        </div>
+      </div>
+      <div id="rightHeader" class="small"></div>
+    </header>
+
+    <!-- Login View -->
+    <div id="loginView" class="card">
+      <h2 style="margin:0 0 20px 0; font-size:24px;">Sign up / Sign in</h2>
+      <div class="form-row">
+        <input id="nameIn" type="text" placeholder="Full name (e.g. Alex Johnson)" value="">
+        <input id="emailIn" type="email" placeholder="Email (e.g. you@school.edu)">
+        <input id="deptIn" type="text" placeholder="Department (e.g. Computer Science)">
+      </div>
+      <div style="display:flex; gap:12px; margin-top:20px; flex-wrap:wrap;">
+        <button id="signupBtn" class="btn">Sign Up</button>
+        <button id="signinBtn" class="btn ghost">Sign In</button>
+        <button id="guestBtn" class="btn ghost">Continue as Guest</button>
+        <button id="demoBtn" class="btn ghost">Demo Data</button>
+      </div>
+      <div style="margin-top:20px" class="small">Your data is stored locally in your browser for privacy and security.</div>
+    </div>
+
+    <!-- Dashboard View -->
+    <div id="dashView" style="display:none">
+      <div class="grid">
+        <main>
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
+              <div>
+                <div class="small">Welcome back</div>
+                <div id="welcomeName" class="welcome">Student</div>
+                <div id="welcomeDept" class="small" style="margin-top:10px">Department</div>
+              </div>
+
+              <div class="circle-wrap">
+                <svg class="progress-svg" width="180" height="180" viewBox="0 0 180 180">
+                  <defs>
+                    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#ff6b6b"/>
+                      <stop offset="100%" stop-color="#ff0000"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="90" cy="90" r="75" stroke="rgba(255,255,255,0.08)" stroke-width="14" fill="none"></circle>
+                  <circle id="progBar" cx="90" cy="90" r="75" stroke="url(#g1)" stroke-width="14" stroke-linecap="round" fill="none"
+                    stroke-dasharray="471.24" stroke-dashoffset="471.24" style="transition:stroke-dashoffset .6s ease, filter .6s ease;"></circle>
+                </svg>
+                <div class="progress-label" id="progressLabel">0%</div>
+              </div>
+            </div>
+
+            <div class="stats">
+              <div class="stat"><div class="small">Completed</div><div class="big" id="completedCount">0</div></div>
+              <div class="stat"><div class="small">Remaining</div><div class="big" id="remainingCount">0</div></div>
+              <div class="stat"><div class="small">Daily Target</div><div class="big" id="dailyTarget">0</div></div>
+            </div>
+
+            <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center">
+              <label class="small">Start date <input id="startDate" type="date" style="padding:10px; border-radius:10px; background:rgba(20,20,30,0.5); border:1px solid rgba(255,255,255,0.1); color:inherit"></label>
+              <label class="small">Duration (days) <input id="durationDays" type="number" min="1" value="30" style="width:100px; padding:10px; border-radius:10px; background:rgba(20,20,30,0.5); border:1px solid rgba(255,255,255,0.1); color:inherit"></label>
+              <label class="small">Daily target <input id="dailyTargetInput" type="number" min="1" value="1" style="width:100px; padding:10px; border-radius:10px; background:rgba(20,20,30,0.5); border:1px solid rgba(255,255,255,0.1); color:inherit"></label>
+              <button id="savePlan" class="btn ghost">Save Plan</button>
+            </div>
+          </div>
+
+          <div class="card topics">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+              <div style="font-weight:600; font-size:20px;">Your Study Topics</div>
+              <div class="small">Add, edit or mark topics complete</div>
+            </div>
+
+            <div style="margin-top:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+              <input id="newTopic" type="text" placeholder="Topic title (e.g. Calculus - Limits)" style="flex:1; padding:14px; border-radius:12px; background:rgba(20,20,30,0.5); border:1px solid rgba(255,255,255,0.1); color:inherit">
+              <button id="addTopic" class="btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:5px;">
+                  <path d="M12 5V19M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Add Topic
+              </button>
+            </div>
+
+            <div id="topicsList" style="margin-top:20px; min-height:200px;"></div>
+
+            <div class="controls">
+              <button id="editTopics" class="btn ghost">Bulk Edit Topics</button>
+              <button id="download" class="btn ghost">Download Data</button>
+              <button id="restore" class="btn ghost">Restore Data</button>
+              <button id="logoutBtn" class="btn ghost">Logout</button>
+              <button id="resetAll" class="btn" style="background:var(--red);">Reset All</button>
+            </div>
+          </div>
+        </main>
+
+        <aside>
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+              <div style="font-weight:600; font-size:18px;">Reminders</div>
+              <div class="small">Set daily reminder</div>
+            </div>
+
+            <div style="margin-top:15px">
+              <label class="small">Reminder time <input id="reminderTime" type="time" style="padding:10px; border-radius:10px; background:rgba(20,20,30,0.5); border:1px solid rgba(255,255,255,0.1); color:inherit"></label>
+              <div style="margin-top:12px; display:flex; gap:12px">
+                <button id="saveReminder" class="btn">Save</button>
+                <button id="clearReminder" class="btn ghost">Clear</button>
+              </div>
+              <div id="reminderStatus" class="small" style="margin-top:12px"></div>
+            </div>
+
+            <hr style="margin:20px 0; border-color:rgba(255,255,255,0.1)">
+
+            <div style="display:flex; justify-content:space-between; align-items:center">
+              <div style="font-weight:600; font-size:18px;">Backgrounds</div>
+              <div class="small">Customize</div>
+            </div>
+            <div style="margin-top:15px" id="bgList">
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn ghost" style="flex:1; background:linear-gradient(135deg, #0f0c29, #302b63);">Space</button>
+                <button class="btn ghost" style="flex:1; background:linear-gradient(135deg, #23074d, #cc5333);">Sunset</button>
+                <button class="btn ghost" style="flex:1; background:linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);">Ocean</button>
+              </div>
+            </div>
+
+            <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
+              <button id="copyLink" class="btn ghost" style="flex:1;">Copy Page Link</button>
+              <button id="deployGuide" class="btn ghost" style="flex:1;">Deploy Guide</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div style="margin-top:20px; text-align:center; color:rgba(255,255,255,0.65); font-size:14px">
+        Your data is stored locally in your browser. Switch devices? Download your data first.
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+  
+  <!-- Modal for confirmations and bulk editing -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Confirmation</h3>
+        <button id="closeModal" class="btn ghost" style="padding:5px 10px; background:rgba(0,0,0,0.2);">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="modalMessage">Are you sure you want to perform this action?</p>
+        <div id="bulkEditorContainer" style="display:none;">
+          <div class="bulk-editor">
+            <textarea id="bulkEditor" placeholder="Enter one topic per line..."></textarea>
+          </div>
+          <div class="instructions">
+            <p><strong>Instructions:</strong></p>
+            <ul>
+              <li>Enter one topic per line</li>
+              <li>To mark a topic as completed, add "[x]" at the beginning</li>
+              <li>For incomplete topics, add "[ ]" or leave as is</li>
+              <li>Example: <code>[x] Completed topic</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="modalCancel" class="btn ghost">Cancel</button>
+        <button id="modalConfirm" class="btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="checkSound" preload="auto">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+  </audio>
+
+<script>
+// State management
+const KEY_USER = 'st_user_v3';
+const KEY_TOPICS = 'st_topics_v3';
+const KEY_PLAN = 'st_plan_v3';
+const KEY_REMINDER = 'st_reminder_v3';
+
+let state = {
+  user: null,
+  topics: [],
+  plan: { startDate: null, durationDays: 30, dailyTarget: 1 },
+  reminder: null
+};
+
+const $ = id => document.getElementById(id);
+const saveJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+const loadJSON = (k, fallback) => {
+  try { 
+    const s = localStorage.getItem(k); 
+    return s ? JSON.parse(s) : fallback; 
+  } catch(e) { 
+    return fallback; 
+  }
+};
+
+// Toast notification
+function showToast(message, duration = 3000) {
+  const toast = $('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, duration);
+}
+
+// Modal system
+const modal = {
+  show: function(title, message, type = 'confirm') {
+    $('modalTitle').textContent = title;
+    $('modalMessage').textContent = message;
+    $('modal').classList.add('active');
+    
+    if (type === 'bulk-edit') {
+      $('bulkEditorContainer').style.display = 'block';
+      $('modalMessage').style.display = 'none';
+    } else {
+      $('bulkEditorContainer').style.display = 'none';
+      $('modalMessage').style.display = 'block';
+    }
+    
+    return new Promise((resolve) => {
+      $('modalConfirm').onclick = () => {
+        this.hide();
+        if (type === 'bulk-edit') {
+          resolve($('bulkEditor').value);
+        } else {
+          resolve(true);
+        }
+      };
+      
+      $('modalCancel').onclick = () => {
+        this.hide();
+        resolve(false);
+      };
+      
+      $('closeModal').onclick = () => {
+        this.hide();
+        resolve(false);
+      };
+    });
+  },
+  
+  hide: function() {
+    $('modal').classList.remove('active');
+  }
+};
+
+// Initialize the app
+function init() {
+  // Load state from localStorage
+  state.user = loadJSON(KEY_USER, null);
+  state.topics = loadJSON(KEY_TOPICS, []);
+  state.plan = loadJSON(KEY_PLAN, state.plan);
+  state.reminder = loadJSON(KEY_REMINDER, null);
+  
+  // Setup event listeners
+  bindUI();
+  
+  // Show appropriate view
+  if (state.user) {
+    showDashboard();
+  } else {
+    $('loginView').style.display = 'block';
+    $('dashView').style.display = 'none';
+  }
+  
+  // Update UI
+  updateReminderUI();
+  renderTopics();
+  updateStats();
+  startReminderChecker();
+}
+
+// Bind UI events
+function bindUI() {
+  // Auth buttons
+  $('signupBtn').addEventListener('click', signup);
+  $('signinBtn').addEventListener('click', signin);
+  $('guestBtn').addEventListener('click', guestSignIn);
+  $('demoBtn').addEventListener('click', demoData);
+  $('logoutBtn').addEventListener('click', logout);
+  
+  // Topic management
+  $('addTopic').addEventListener('click', () => {
+    const topic = $('newTopic').value.trim();
+    if (!topic) {
+      showToast('Please enter a topic title', 2000);
+      return;
+    }
+    
+    state.topics.push({ title: topic, done: false });
+    saveJSON(KEY_TOPICS, state.topics);
+    $('newTopic').value = '';
+    renderTopics();
+    updateStats();
+    playSound();
+    showToast('Topic added successfully');
+  });
+  
+  // Bulk edit
+  $('editTopics').addEventListener('click', editTopicsBulk);
+  
+  // Data management
+  $('download').addEventListener('click', downloadData);
+  $('restore').addEventListener('click', restoreFromFile);
+  $('resetAll').addEventListener('click', resetAll);
+  
+  // Plan and reminders
+  $('savePlan').addEventListener('click', savePlan);
+  $('saveReminder').addEventListener('click', saveReminder);
+  $('clearReminder').addEventListener('click', clearReminder);
+  
+  // Other buttons
+  $('copyLink').addEventListener('click', () => {
+    navigator.clipboard.writeText(location.href).then(() => {
+      showToast('Page link copied to clipboard');
+    });
+  });
+  
+  $('deployGuide').addEventListener('click', () => {
+    showToast('Deploy guide: Commit to GitHub and enable GitHub Pages');
+  });
+  
+  // Modal close
+  $('closeModal').addEventListener('click', () => modal.hide());
+}
+
+// Authentication functions
+function signup() {
+  const name = $('nameIn').value.trim();
+  const email = $('emailIn').value.trim();
+  const dept = $('deptIn').value.trim();
+  
+  if (!name) {
+    showToast('Please enter your name', 2000);
+    return;
+  }
+  
+  state.user = { name, email, department: dept, created: Date.now() };
+  saveJSON(KEY_USER, state.user);
+  showDashboard();
+  showToast(`Welcome, ${name}!`, 3000);
+}
+
+function signin() {
+  const saved = loadJSON(KEY_USER, null);
+  const email = $('emailIn').value.trim();
+  
+  if (!saved || (email && saved.email !== email)) {
+    showToast('No account found with that email. Please sign up or use guest mode.', 3000);
+    return;
+  }
+  
+  state.user = saved;
+  saveJSON(KEY_USER, state.user);
+  showDashboard();
+  showToast(`Welcome back, ${state.user.name}!`, 3000);
+}
+
+function guestSignIn() {
+  state.user = { name: 'Guest', email: `guest_${Date.now()}@local`, department: '' };
+  saveJSON(KEY_USER, state.user);
+  showDashboard();
+  showToast('Signed in as Guest', 3000);
+}
+
+function demoData() {
+  state.user = { name: 'Alex Johnson', email: 'alex.johnson@example.com', department: 'Computer Science' };
+  state.topics = [
+    { title: 'Introduction to Algorithms', done: true },
+    { title: 'Data Structures: Arrays and Lists', done: true },
+    { title: 'Sorting Algorithms', done: false },
+    { title: 'Graph Theory Basics', done: false },
+    { title: 'Dynamic Programming', done: false }
+  ];
+  state.plan = { startDate: new Date().toISOString().slice(0, 10), durationDays: 45, dailyTarget: 2 };
+  
+  saveJSON(KEY_USER, state.user);
+  saveJSON(KEY_TOPICS, state.topics);
+  saveJSON(KEY_PLAN, state.plan);
+  
+  showDashboard();
+  showToast('Demo data loaded successfully', 3000);
+}
+
+// Dashboard functions
+function showDashboard() {
+  $('loginView').style.display = 'none';
+  $('dashView').style.display = 'block';
+  
+  $('welcomeName').textContent = state.user.name || 'Student';
+  $('welcomeDept').textContent = state.user.department || '';
+  $('rightHeader').textContent = `${state.user.name || ''}`;
+  
+  // Set plan UI
+  $('startDate').value = state.plan.startDate || '';
+  $('durationDays').value = state.plan.durationDays || 30;
+  $('dailyTargetInput').value = state.plan.dailyTarget || 1;
+  
+  renderTopics();
+  updateStats();
+}
+
+function logout() {
+  modal.show('Confirm Logout', 'Are you sure you want to logout?').then(confirmed => {
+    if (confirmed) {
+      state.user = null;
+      saveJSON(KEY_USER, null);
+      $('loginView').style.display = 'block';
+      $('dashView').style.display = 'none';
+      showToast('You have been logged out', 3000);
+    }
+  });
+}
+
+// Topic rendering and management
+function renderTopics() {
+  const container = $('topicsList');
+  container.innerHTML = '';
+  
+  if (!state.topics.length) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:40px 20px; color:var(--muted);">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="opacity:0.5; margin-bottom:15px;">
+          <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <p>No topics yet. Add your first topic above!</p>
+      </div>
+    `;
+    return;
+  }
+  
+  state.topics.forEach((topic, index) => {
+    const topicElement = document.createElement('div');
+    topicElement.className = 'topic';
+    topicElement.innerHTML = `
+      <input type="checkbox" id="topic-${index}" ${topic.done ? 'checked' : ''}>
+      <div class="title ${topic.done ? 'completed' : ''}">${topic.title}</div>
+      <div class="actions">
+        <button class="btn ghost edit-btn">Edit</button>
+        <button class="btn ghost delete-btn">Delete</button>
+      </div>
+    `;
+    
+    // Add event listeners
+    const checkbox = topicElement.querySelector(`#topic-${index}`);
+    checkbox.addEventListener('change', () => {
+      topic.done = checkbox.checked;
+      saveJSON(KEY_TOPICS, state.topics);
+      playSound();
+      renderTopics();
+      updateStats();
+      showToast(`Topic marked as ${topic.done ? 'completed' : 'incomplete'}`);
+    });
+    
+    topicElement.querySelector('.edit-btn').addEventListener('click', () => {
+      modal.show('Edit Topic', 'Enter new title for this topic:').then(newTitle => {
+        if (newTitle && newTitle.trim()) {
+          topic.title = newTitle.trim();
+          saveJSON(KEY_TOPICS, state.topics);
+          renderTopics();
+          showToast('Topic updated');
+        }
+      });
+    });
+    
+    topicElement.querySelector('.delete-btn').addEventListener('click', () => {
+      modal.show('Confirm Deletion', `Are you sure you want to delete "${topic.title}"?`).then(confirmed => {
+        if (confirmed) {
+          state.topics.splice(index, 1);
+          saveJSON(KEY_TOPICS, state.topics);
+          renderTopics();
+          updateStats();
+          showToast('Topic deleted');
+        }
+      });
+    });
+    
+    container.appendChild(topicElement);
+  });
+}
+
+// Bulk topic editing
+async function editTopicsBulk() {
+  // Convert current topics to text format
+  const currentText = state.topics.map(t => 
+    `[${t.done ? 'x' : ' '}] ${t.title}`
+  ).join('\n');
+  
+  // Show modal with bulk editor
+  const newText = await modal.show('Bulk Edit Topics', '', 'bulk-edit');
+  
+  if (newText) {
+    $('bulkEditor').value = currentText;
+    
+    const confirmed = await modal.show('Bulk Edit Topics', '', 'bulk-edit');
+    
+    if (confirmed) {
+      const lines = confirmed.split('\n')
+        .map(line => line.trim())
+        .filter(line => line);
+      
+      const newTopics = [];
+      
+      for (const line of lines) {
+        // Try to parse completed status
+        let done = false;
+        let title = line;
+        
+        if (line.startsWith('[x]') || line.startsWith('[X]')) {
+          done = true;
+          title = line.substring(3).trim();
+        } else if (line.startsWith('[ ]')) {
+          title = line.substring(3).trim();
+        }
+        
+        if (title) {
+          newTopics.push({ title, done });
+        }
+      }
+      
+      if (newTopics.length > 0) {
+        state.topics = newTopics;
+        saveJSON(KEY_TOPICS, state.topics);
+        renderTopics();
+        updateStats();
+        showToast(`Updated ${newTopics.length} topics`);
+      } else {
+        showToast('No valid topics found', 3000);
+      }
+    }
+  }
+}
+
+// Progress and stats
+function updateStats() {
+  const total = state.topics.length;
+  const completed = state.topics.filter(t => t.done).length;
+  const percent = total ? Math.round((completed / total) * 100) : 0;
+  
+  $('completedCount').textContent = completed;
+  $('remainingCount').textContent = total - completed;
+  $('progressLabel').textContent = `${percent}%`;
+  
+  // Update progress circle
+  const circumference = 471.24; // 2 * π * r (r = 75)
+  const offset = circumference - (circumference * percent / 100);
+  $('progBar').style.strokeDashoffset = offset;
+  
+  // Update daily target display
+  const dailyTarget = state.plan.dailyTarget || parseInt($('dailyTargetInput').value || 1);
+  $('dailyTarget').textContent = dailyTarget;
+}
+
+// Plan management
+function savePlan() {
+  state.plan.startDate = $('startDate').value || null;
+  state.plan.durationDays = parseInt($('durationDays').value || 30);
+  state.plan.dailyTarget = parseInt($('dailyTargetInput').value || 1);
+  
+  saveJSON(KEY_PLAN, state.plan);
+  updateStats();
+  showToast('Study plan saved successfully');
+}
+
+// Reminder system
+function saveReminder() {
+  const time = $('reminderTime').value;
+  
+  if (!time) {
+    showToast('Please select a time for the reminder', 3000);
+    return;
+  }
+  
+  state.reminder = { time };
+  saveJSON(KEY_REMINDER, state.reminder);
+  updateReminderUI();
+  showToast(`Daily reminder set for ${time}`);
+}
+
+function clearReminder() {
+  state.reminder = null;
+  saveJSON(KEY_REMINDER, null);
+  updateReminderUI();
+  showToast('Reminder cleared');
+}
+
+function updateReminderUI() {
+  if (state.reminder && state.reminder.time) {
+    $('reminderTime').value = state.reminder.time;
+    $('reminderStatus').textContent = `Daily at ${state.reminder.time}`;
+  } else {
+    $('reminderTime').value = '';
+    $('reminderStatus').textContent = 'No reminder set';
+  }
+}
+
+function startReminderChecker() {
+  setInterval(() => {
+    if (!state.reminder || !state.reminder.time) return;
+    
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const currentTime = `${hours}:${minutes}`;
+    
+    if (currentTime === state.reminder.time) {
+      const lastTriggered = state.reminder.lastTriggered || '';
+      const today = new Date().toDateString();
+      
+      if (lastTriggered !== today) {
+        showToast(`⏰ Time to study, ${state.user.name || 'Student'}!`);
+        state.reminder.lastTriggered = today;
+        saveJSON(KEY_REMINDER, state.reminder);
+      }
+    }
+  }, 60000); // Check every minute
+}
+
+// Data management
+function downloadData() {
+  const data = {
+    user: state.user,
+    topics: state.topics,
+    plan: state.plan,
+    reminder: state.reminder
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  
+  a.href = url;
+  a.download = 'study-tracker-data.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  showToast('Data downloaded successfully');
+}
+
+function restoreFromFile() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    try {
+      const content = await file.text();
+      const data = JSON.parse(content);
+      
+      if (data.user) state.user = data.user;
+      if (data.topics) state.topics = data.topics;
+      if (data.plan) state.plan = data.plan;
+      if (data.reminder) state.reminder = data.reminder;
+      
+      saveJSON(KEY_USER, state.user);
+      saveJSON(KEY_TOPICS, state.topics);
+      saveJSON(KEY_PLAN, state.plan);
+      saveJSON(KEY_REMINDER, state.reminder);
+      
+      showDashboard();
+      showToast('Data restored successfully');
+    } catch (error) {
+      showToast('Error restoring data. Invalid file format.', 4000);
+    }
+  };
+  
+  input.click();
+}
+
+function resetAll() {
+  modal.show('Confirm Reset', 'Are you sure you want to reset ALL data? This cannot be undone.').then(confirmed => {
+    if (confirmed) {
+      state.user = null;
+      state.topics = [];
+      state.plan = { startDate: null, durationDays: 30, dailyTarget: 1 };
+      state.reminder = null;
+      
+      saveJSON(KEY_USER, null);
+      saveJSON(KEY_TOPICS, state.topics);
+      saveJSON(KEY_PLAN, state.plan);
+      saveJSON(KEY_REMINDER, null);
+      
+      $('loginView').style.display = 'block';
+      $('dashView').style.display = 'none';
+      showToast('All data has been reset', 3000);
+    }
+  });
+}
+
+// Utilities
+function playSound() {
+  const sound = $('checkSound');
+  try {
+    sound.currentTime = 0;
+    sound.play();
+  } catch (e) {
+    console.log('Sound play failed', e);
+  }
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
